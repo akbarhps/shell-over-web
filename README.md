@@ -3,7 +3,7 @@
 i know this might sound stupid, but i don't know how to use ssh, so this is easier approach.
 i use this for running shell command from my phone
 
-> [Currently it's only run on windows](index.js:18)
+> [Currently it's only run on windows](https://github.com/akbarhps/shell-over-web/blob/master/index.js#L18)
 
 ### Installation
 
