@@ -20,7 +20,7 @@ npm start
 ### Dev
 
 ```bash
-npm run start
+npm run dev
 ```
 
 ### Access from local network
