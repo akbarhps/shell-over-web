@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"></script>
+    <title>Explorer</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            background: black;
+            color: white;
+        }
+
+        #explorer {
+            display: grid;
+            grid-template-rows: repeat(auto-fill, 1fr);
+        }
+
+        .items {
+            width: 96%;
+            padding: 8px 2%;
+            border-bottom: solid white 1px;
+            cursor: pointer;
+        }
+
+        .items:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="explorer"></div>
+
+    <script>
+        let socket = io.connect(window.location.origin);
+
+        const explorerView = document.querySelector('#explorer');
+        const paths = ['C:/'];
+
+        function navigate(path) {
+            socket.emit('explorer', path);
+        }
+
+        function createItem(itemName, clickCallback) {
+            const itemView = document.createElement('p');
+            itemView.className = 'items';
+            itemView.textContent = itemName;
+
+            itemView.addEventListener('click', () => {
+                clickCallback();
+            });
+
+            explorerView.appendChild(itemView);
+        }
+
+        function createBackItem() {
+            const pathLength = paths.length;
+            const lastPath = paths[pathLength - 2];
+
+            createItem(lastPath, () => {
+                if (pathLength > 1) {
+                    paths.pop();
+                }
+                console.log(lastPath);
+                navigate(lastPath);
+            });
+        }
+
+        navigate(paths[0]);
+
+        socket.on('explorer', items => {
+            const currentPath = paths[paths.length - 1];
+            explorerView.innerHTML = '';
+
+            if (paths.length > 1) {
+                createBackItem();
+            }
+
+            for (let item of items) {
+                createItem(item, () => {
+                    const direction = currentPath + '/' + item;
+                    paths.push(direction);
+                    navigate(direction);
+                });
+            }
+        });
+
+        socket.on('file', path => {
+            explorerView.innerHTML = '';
+
+            if (paths.length > 1) {
+                createBackItem();
+            }
+
+            const downloadButton = document.createElement('a');
+            downloadButton.className = 'items';
+            downloadButton.href = path;
+            downloadButton.innerText = 'Download File';
+
+            explorerView.appendChild(downloadButton);
+        });
+
+    </script>
+</body>
+
+</html>

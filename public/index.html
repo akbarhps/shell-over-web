@@ -5,13 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"></script>
     <title>SSH?</title>
     <style>
         * {
             padding: 0;
             margin: 0;
-            font-family: 'consolas';
             background: black;
             color: white;
         }
@@ -24,65 +22,29 @@
 
         body {
             display: grid;
-            grid-template-rows: auto 10%;
-            overflow: hidden;
+            grid-template-rows: repeat(4, 25%);
         }
 
-        #log {
-            width: 98%;
-            height: 98%;
-            padding: 1%;
-            overflow-y: scroll;
-        }
-
-        #script {
-            border-top: solid white 1px;
-            z-index: 2;
-            height: 100%;
-        }
-
-        #script_input {
-            border: none;
-            background: transparent;
+        a {
+            margin: auto;
             width: 96%;
-            height: 100%;
-            padding: 0 2%;
-            font-size: 1.2em;
+            height: 96%;
+            border: solid white 1px;
+            display: grid;
+            justify-content: center;
+            align-content: center;
+        }
+
+        a:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
 
 <body>
-    <div id="log"> </div>
-    <div id="script">
-        <input type="text" id="script_input" placeholder="script here." />
-    </div>
-    <script>
-        let socket = io.connect(window.location.origin);
-
-        const logView = document.querySelector('#log');
-        const scriptView = document.querySelector('#script');
-        const scriptInput = document.querySelector('#script_input');
-
-        scriptInput.addEventListener('keyup', e => {
-            if (e.keyCode === 13) {
-                const script = scriptInput.value.toLowerCase();
-                socket.emit('command', script);
-                scriptInput.value = '';
-            }
-        });
-
-        socket.on('log', log => {
-            const splittedLog = log.split('\n');
-            for (let line of splittedLog) {
-                const isBlank = !line || line.length == 1 && line.charCodeAt(0) === 13;
-                if (isBlank) continue;
-
-                logView.innerHTML += `<p>${new Date().toLocaleTimeString()}: ${line} </p>`;
-                logView.scrollTop = logView.scrollHeight;
-            }
-        });
-    </script>
+    <a href="/explorer">Explorer</a>
+    <a href="/terminal">Terminal</a>
+    <a href="/drop">Air Drop</a>
 </body>
 
 </html>
